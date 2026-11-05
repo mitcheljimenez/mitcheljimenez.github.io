@@ -1,0 +1,649 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Mitchel Jiménez · Software Engineer</title>
+<meta name="description" content="Mitchel Jiménez, Full Stack & Cloud Software Engineer based in Santiago, Chile.">
+<style>
+  :root {
+    --bg: #05080d;
+    --panel: #0a1019;
+    --line: #1a2636;
+    --text: #dde6ef;
+    --muted: #7f8ea0;
+    --accent: #4ea1ff;
+    --accent2: #a9d4ff;
+    --mono: ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body { margin: 0; background: var(--bg); color: var(--text); font: 15px/1.65 var(--mono); }
+  a { color: var(--accent2); text-decoration: none; border-bottom: 1px dashed #2f4a6a; }
+  a:hover { color: #fff; border-bottom-color: var(--accent); }
+
+  /* ---------- hero ---------- */
+  .hero { position: relative; height: 100vh; min-height: 520px; overflow: hidden; }
+  .hero canvas { position: absolute; inset: 0; width: 100%; height: 100%; }
+  .hero-content {
+    position: absolute; left: 0; right: 0; top: 24vh; text-align: center;
+    padding: 0 16px; pointer-events: none;
+  }
+  .fullname { margin: 0; font-size: clamp(32px, 6vw, 64px); font-weight: 600; color: var(--accent2); letter-spacing: .02em; line-height: 1.1; text-shadow: 0 0 18px rgba(78,161,255,.3); }
+  .role { margin-top: 12px; color: var(--muted); font-size: clamp(13px, 2vw, 17px); }
+  .scroll {
+    position: absolute; bottom: 22px; left: 50%; transform: translateX(-50%);
+    color: var(--muted); font-size: 12px; border: 0;
+  }
+
+  /* ---------- body ---------- */
+  main { max-width: 860px; margin: 0 auto; padding: 48px 16px 80px; }
+  nav { display: flex; flex-wrap: wrap; gap: 6px 18px; margin-bottom: 40px; color: var(--muted); }
+  nav a { border: 0; color: var(--muted); }
+  nav a:hover { color: var(--accent2); }
+  section { margin-bottom: 56px; }
+  .cmd { color: var(--muted); margin: 0 0 14px; font-size: 15px; font-weight: normal; }
+  .cmd .ps { color: var(--accent); }
+  .cmd .arg { color: var(--text); }
+  p { margin: 0 0 12px; }
+
+  .card {
+    border: 1px solid var(--line); background: var(--panel);
+    padding: 18px 20px; margin-bottom: 14px; border-radius: 4px;
+  }
+  .card h3 { margin: 0 0 2px; font-size: 16px; color: var(--accent2); font-weight: 600; }
+  .card .meta { color: var(--muted); font-size: 13px; margin-bottom: 10px; }
+  .card ul { margin: 6px 0 0; padding-left: 0; list-style: none; }
+  .card li { padding-left: 1.4em; position: relative; margin-bottom: 6px; }
+  .card li::before { content: "›"; position: absolute; left: .3em; color: var(--accent); }
+  .tags { margin-top: 10px; display: flex; flex-wrap: wrap; gap: 6px; }
+  .tag { font-size: 12px; color: var(--muted); border: 1px solid var(--line); padding: 1px 8px; border-radius: 3px; }
+  .note { font-size: 13px; color: var(--muted); border-left: 2px solid var(--line); padding-left: 12px; margin: 18px 0; }
+  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 14px; }
+  .grid .card { margin: 0; }
+  .shots { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 10px; margin-top: 12px; }
+  .shots img { width: 100%; border: 1px solid var(--line); border-radius: 3px; display: block; }
+  .contact p { margin-bottom: 6px; }
+  .contact .k { display: inline-block; width: 6.5em; color: var(--muted); }
+  footer { text-align: center; color: var(--muted); font-size: 12px; padding: 24px 16px 40px; }
+
+  .lang {
+    position: fixed; top: 14px; right: 16px; z-index: 10;
+    font: 13px var(--mono); color: var(--muted); cursor: pointer;
+    background: rgba(10,16,25,.85); border: 1px solid var(--line); border-radius: 4px; padding: 4px 10px;
+  }
+  .lang:hover { border-color: var(--accent); }
+  .lang .on { color: var(--accent2); }
+
+  .hero-content { z-index: 1; }
+  .hero-content::before {
+    content: ""; position: absolute; left: 50%; top: 50%; width: min(760px, 100%); height: 220%;
+    transform: translate(-50%, -50%); z-index: -1;
+    background: radial-gradient(ellipse at center, rgba(5,8,13,.92) 0%, rgba(5,8,13,.75) 40%, rgba(5,8,13,0) 70%);
+  }
+  /* ---------- lab: selector de efectos ---------- */
+  .fx {
+    position: absolute; left: 0; right: 0; bottom: 56px; display: flex; flex-wrap: wrap;
+    justify-content: center; gap: 6px; padding: 0 16px; z-index: 2;
+  }
+  .fx button {
+    font: 12px var(--mono); color: var(--muted); background: rgba(10,16,25,.8);
+    border: 1px solid var(--line); border-radius: 3px; padding: 3px 9px; cursor: pointer;
+  }
+  .fx button:hover { color: var(--text); border-color: var(--accent); }
+  .fx button.on { color: var(--accent2); border-color: var(--accent); }
+
+  /* ---------- lab: scroll ---------- */
+  .card, .note { opacity: 0; transform: translateY(16px); transition: opacity .6s ease, transform .6s ease; }
+  .card.in, .note.in { opacity: 1; transform: none; }
+  .card li { opacity: 0; transform: translateX(-8px); transition: opacity .4s ease, transform .4s ease; }
+  .card.in li { opacity: 1; transform: none; }
+  .card.in li:nth-child(2) { transition-delay: .12s; }
+  .card.in li:nth-child(3) { transition-delay: .24s; }
+  .card.in li:nth-child(4) { transition-delay: .36s; }
+  .no-anim .card, .no-anim .note, .no-anim .card li { opacity: 1; transform: none; }
+  .typing::after { content: "_"; color: var(--accent); animation: blink .8s steps(1) infinite; }
+  @keyframes blink { 50% { opacity: 0; } }
+  .rule { color: var(--line); white-space: nowrap; overflow: hidden; height: 1.6em; margin: -28px 0 28px; }
+  #progress {
+    position: fixed; left: 16px; bottom: 14px; z-index: 10; font: 12px var(--mono); color: var(--muted);
+    background: rgba(10,16,25,.85); border: 1px solid var(--line); border-radius: 4px; padding: 3px 8px;
+    white-space: pre; opacity: 0; transition: opacity .3s;
+  }
+  #progress.show { opacity: 1; }
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <canvas id="fire" aria-hidden="true"></canvas>
+  <div class="hero-content">
+    <h1 class="fullname">Mitchel Jiménez</h1>
+    <div class="role" data-i18n="role">Software Engineer · Full Stack &amp; Cloud · Santiago, Chile</div>
+  </div>
+  <div class="fx" role="group" aria-label="efectos">
+    <button type="button" data-fx="fire" data-i18n="fx_fire">fire</button>
+    <button type="button" data-fx="plasma" data-i18n="fx_plasma">plasma</button>
+    <button type="button" data-fx="stars" data-i18n="fx_stars">stars</button>
+    <button type="button" data-fx="rain" data-i18n="fx_rain">rain</button>
+    <button type="button" data-fx="torus" data-i18n="fx_torus">torus</button>
+    <button type="button" data-fx="life" data-i18n="fx_life">life</button>
+  </div>
+  <a class="scroll" href="#about" data-i18n="scroll">↓ more</a>
+</header>
+
+<button class="lang" id="lang" type="button" aria-label="Cambiar idioma / Change language">
+  <span data-l="en">EN</span> / <span data-l="es">ES</span>
+</button>
+
+<div id="progress" aria-hidden="true"></div>
+
+<main>
+  <nav>
+    <a href="#about" data-i18n="nav_about">./about</a>
+    <a href="#experience" data-i18n="nav_exp">./experience</a>
+    <a href="#projects" data-i18n="nav_proj">./projects</a>
+    <a href="#contact" data-i18n="nav_contact">./contact</a>
+  </nav>
+
+  <section id="about">
+    <h2 class="cmd"><span class="ps">$</span> <span class="arg">whoami</span></h2>
+    <p data-i18n="about1">Software engineer with over 6 years of experience building web products and cloud systems in cybersecurity, fintech and the public sector.</p>
+    <p data-i18n="about2">I usually take projects from design to production and work closely with product and sales teams. I studied Computer Science at Universidad de Chile, with a focus on computer vision and graphics.</p>
+  </section>
+
+  <div class="rule" aria-hidden="true"></div>
+  <section id="experience">
+    <h2 class="cmd"><span class="ps">$</span> <span class="arg" data-i18n="cmd_exp">cat experience.log</span></h2>
+
+    <div class="card">
+      <h3>ZeroFox</h3>
+      <div class="meta" data-i18n="zf_meta">Software Engineer II · Jun 2025 – Oct 2026 · Cybersecurity, digital risk protection</div>
+      <ul>
+        <li data-i18n="zf1">Led the design of a new executive risk scoring model with Product and Sales Engineering, and coordinated its implementation. Customers can now understand the scores and act on them more easily.</li>
+        <li data-i18n="zf2">Found problems in the Executive Protection asset configuration and led its redesign, with simpler interfaces and standardized feature flags. Manual configuration time went down.</li>
+        <li data-i18n="zf3">Reduced the cost of the asset exposure scanner by tuning scan frequency, removing duplicate runs and using spot instances. Scans got faster and kept the same coverage.</li>
+        <li data-i18n="zf4">Worked with Sales Engineers and Account Managers, wrote configuration guides and proposed product improvements.</li>
+      </ul>
+      <div class="tags"><span class="tag">AWS</span><span class="tag">Go</span><span class="tag">TypeScript</span><span class="tag">Python</span></div>
+    </div>
+
+    <div class="card">
+      <h3>Kredito</h3>
+      <div class="meta" data-i18n="kr_meta">Full Stack Software Engineer · Aug 2021 – Jun 2025 · Lending and factoring fintech</div>
+      <ul>
+        <li data-i18n="kr1">Rebuilt the credit risk engine on AWS as a decision tree, so Operations could change evaluation rules without depending on engineering.</li>
+        <li data-i18n="kr2">Built internal tools for real-time factoring operations and customer insights, and led projects like a referral program.</li>
+        <li data-i18n="kr3">Set up canary releases, improved CI/CD and automated workflows with AWS Lambda and Step Functions.</li>
+        <li data-i18n="kr4">Organized and taught internal workshops on React, AWS and Next.js for new team members.</li>
+      </ul>
+      <div class="tags"><span class="tag">AWS</span><span class="tag">Node.js</span><span class="tag">React</span><span class="tag">Next.js</span><span class="tag">GCP</span></div>
+    </div>
+
+    <div class="card">
+      <h3 data-i18n="fr_title">Freelance</h3>
+      <div class="meta" data-i18n="fr_meta">Software Engineer · 2021 – present</div>
+      <ul>
+        <li data-i18n="fr1">Designed and built a platform for JUNAEB and FAO that supports public food programs in Chile, working directly with both institutions.</li>
+        <li data-i18n="fr2">Designed and built an assisted-shopping marketplace with Fintoc and Webpay payments, plus automated price review and refunds.</li>
+        <li data-i18n="fr3">Designed the architecture for a water pump company's platform, with real-time monitoring and data collected from the machines' built-in APIs.</li>
+        <li data-i18n="fr4">Built a futures trading bot with its own operations platform, managed and monitored through Telegram and Discord bots.</li>
+      </ul>
+    </div>
+  </section>
+
+  <div class="rule" aria-hidden="true"></div>
+  <section id="projects">
+    <h2 class="cmd"><span class="ps">$</span> <span class="arg" data-i18n="cmd_proj">ls projects/</span></h2>
+
+    <div class="card">
+      <h3>Financy</h3>
+      <div class="meta" data-i18n="mf_meta">Personal project, in daily use</div>
+      <p data-i18n="mf_desc">An installable personal finance app for two people, with a shared space for the household. Every day it reads the emails and statements from four Chilean banks, classifies spending and income, detects subscriptions, and tracks debts, savings and projections. It has an MCP server on the same Worker, so I can work with my finances from Claude. It costs $0 a month to run.</p>
+      <!-- capturas con datos de ejemplo: descomenta y pon las imágenes en /img
+      <div class="shots">
+        <img src="img/financy-1.png" alt="Financy" loading="lazy">
+        <img src="img/financy-2.png" alt="Financy" loading="lazy">
+      </div>
+      -->
+      <div class="tags"><span class="tag">SvelteKit</span><span class="tag">PWA</span><span class="tag">Cloudflare Workers</span><span class="tag">Hono</span><span class="tag">D1</span><span class="tag">R2</span><span class="tag">Passkeys</span><span class="tag">Workers AI</span><span class="tag">MCP</span></div>
+    </div>
+
+    <div class="card">
+      <h3>chd-batch-converter</h3>
+      <div class="meta" data-i18n="chd_meta">Open source desktop app</div>
+      <p data-i18n="chd_desc">Converts PS1, PS2 and PSP disc images to verified .chd files with chdman, using all CPU cores in parallel.</p>
+      <a href="https://github.com/mitcheljimenez/chd-batch-converter" target="_blank" rel="noopener" data-i18n="link_code">View code →</a>
+      <div class="tags"><span class="tag">Rust</span></div>
+    </div>
+
+    <p class="note" data-i18n="demo_note">Demo websites for fictional businesses, built with Next.js and Payload CMS. Clients can edit text and photos directly on the page.</p>
+    <div class="grid">
+      <div class="card">
+        <h3>Lumen</h3>
+        <div class="meta" data-i18n="d1_meta">Single page · Aesthetic clinic</div>
+        <p data-i18n="d1_desc">Spanish and English, chosen from the browser language. Scores 90–98 on mobile PageSpeed.</p>
+        <a href="https://estetica.demo.gudminds.cl/" target="_blank" rel="noopener" data-i18n="link_live">View site →</a>
+      </div>
+      <div class="card">
+        <h3>Clínica Dental Arrayán</h3>
+        <div class="meta" data-i18n="d2_meta">Website · Dental clinic</div>
+        <p data-i18n="d2_desc">Services, team, gallery and blog, managed from Payload.</p>
+        <a href="https://dental.demo.gudminds.cl/" target="_blank" rel="noopener" data-i18n="link_live">View site →</a>
+      </div>
+      <div class="card">
+        <h3>Tostaduría Cordillera</h3>
+        <div class="meta" data-i18n="d3_meta">Online store · Coffee roastery</div>
+        <p data-i18n="d3_desc">Catalog, cart, simulated payment and orders. Runs on Docker with Postgres.</p>
+        <a href="https://cafe.demo.gudminds.cl/" target="_blank" rel="noopener" data-i18n="link_live">View site →</a>
+      </div>
+    </div>
+  </section>
+
+  <div class="rule" aria-hidden="true"></div>
+  <section id="contact" class="contact">
+    <h2 class="cmd"><span class="ps">$</span> <span class="arg" data-i18n="cmd_contact">cat contact.txt</span></h2>
+    <p><span class="k">LinkedIn</span><a href="https://www.linkedin.com/in/mitchel-jim%C3%A9nez-044386132/" target="_blank" rel="noopener">mitchel-jiménez</a></p>
+    <p><span class="k">GitHub</span><a href="https://github.com/mitcheljimenez" target="_blank" rel="noopener">mitcheljimenez</a></p>
+    <p><span class="k" data-i18n="k_email">Email</span><a href="mailto:mitcheljimrod@gmail.com">mitcheljimrod@gmail.com</a></p>
+  </section>
+</main>
+
+<footer>Mitchel Jiménez, 2026</footer>
+
+<script>
+(() => {
+  const ES = {
+    role: 'Ingeniero de Software · Full Stack y Cloud · Santiago, Chile',
+    scroll: '↓ ver más',
+    nav_about: './perfil',
+    nav_exp: './experiencia',
+    nav_proj: './proyectos',
+    nav_contact: './contacto',
+    cmd_exp: 'cat experiencia.log',
+    cmd_proj: 'ls proyectos/',
+    cmd_contact: 'cat contacto.txt',
+    about1: 'Ingeniero de software con más de 6 años de experiencia construyendo productos web y sistemas en la nube, en ciberseguridad, fintech y el sector público.',
+    about2: 'Suelo llevar los proyectos desde el diseño hasta producción y trabajo de cerca con los equipos de producto y ventas. Estudié Ingeniería en Computación en la Universidad de Chile, con foco en visión por computador y gráficos.',
+    zf_meta: 'Ingeniero de Software II · jun. 2025 – oct. 2026 · Ciberseguridad, protección de riesgo digital',
+    zf1: 'Lideré el diseño de un nuevo modelo de puntaje de riesgo para ejecutivos junto a los equipos de Producto y Preventa, y coordiné su implementación. Ahora los clientes entienden los puntajes y actúan sobre ellos con más facilidad.',
+    zf2: 'Detecté problemas en la configuración de activos del producto de protección de ejecutivos y lideré su rediseño, con interfaces más simples y opciones de funcionalidad estandarizadas. Bajó el tiempo de configuración manual.',
+    zf3: 'Reduje el costo del escáner de exposición de activos ajustando la frecuencia de escaneo, eliminando ejecuciones duplicadas y usando instancias de bajo costo. Los escaneos quedaron más rápidos y con la misma cobertura.',
+    zf4: 'Trabajé con los equipos de preventa y de gestión de cuentas, escribí guías de configuración y propuse mejoras al producto.',
+    kr_meta: 'Ingeniero de Software Full Stack · ago. 2021 – jun. 2025 · Fintech de créditos y factoring',
+    kr1: 'Reconstruí el motor de riesgo de crédito en AWS como un árbol de decisión, para que Operaciones pudiera cambiar las reglas de evaluación sin depender de ingeniería.',
+    kr2: 'Construí herramientas internas para operaciones de factoring en tiempo real y análisis de clientes, y lideré proyectos como un programa de referidos.',
+    kr3: 'Implementé despliegues graduales, mejoré la integración y entrega continua, y automaticé flujos con AWS Lambda y Step Functions.',
+    kr4: 'Organicé y dicté talleres internos de React, AWS y Next.js para las personas nuevas del equipo.',
+    fr_title: 'Independiente',
+    fr_meta: 'Ingeniero de Software · 2021 – hoy',
+    fr1: 'Diseñé y construí una plataforma para JUNAEB y FAO que apoya programas públicos de alimentación en Chile, trabajando directamente con ambas instituciones.',
+    fr2: 'Diseñé y construí un marketplace de compras asistidas con pagos por Fintoc y Webpay, revisión automática de precios y reembolsos.',
+    fr3: 'Diseñé la arquitectura de la plataforma de una empresa de bombas de agua, con monitoreo en tiempo real y datos tomados de las APIs de las propias máquinas.',
+    fr4: 'Construí un bot de trading de futuros con su propia plataforma de operación, administrado y monitoreado desde bots de Telegram y Discord.',
+    mf_meta: 'Proyecto personal, en uso diario',
+    mf_desc: 'Una app instalable de finanzas personales para dos personas, con un espacio compartido para la casa. Cada día lee los correos y estados de cuenta de cuatro bancos chilenos, clasifica gastos e ingresos, detecta suscripciones y lleva deudas, ahorro y proyecciones. Tiene un servidor MCP en el mismo Worker, así que puedo trabajar con mis finanzas desde Claude. Mantenerla cuesta $0 al mes.',
+    chd_meta: 'App de escritorio de código abierto',
+    chd_desc: 'Convierte imágenes de discos de PS1, PS2 y PSP a archivos .chd verificados con chdman, usando todos los núcleos de la CPU en paralelo.',
+    link_code: 'Ver código →',
+    link_live: 'Ver sitio →',
+    demo_note: 'Sitios de demostración para negocios ficticios, hechos con Next.js y Payload CMS. El cliente puede editar textos y fotos directamente sobre la página.',
+    d1_meta: 'Página única · Centro de estética',
+    d1_desc: 'En español e inglés según el idioma del navegador. Puntaje de 90 a 98 en PageSpeed móvil.',
+    d2_meta: 'Sitio web · Clínica dental',
+    d2_desc: 'Servicios, equipo, galería y blog, administrados desde Payload.',
+    d3_meta: 'Tienda en línea · Tostaduría de café',
+    d3_desc: 'Catálogo, carrito, pago simulado y pedidos. Corre en Docker con Postgres.',
+    k_email: 'Correo',
+    fx_fire: 'fuego',
+    fx_plasma: 'plasma',
+    fx_stars: 'estrellas',
+    fx_rain: 'lluvia',
+    fx_torus: 'toro 3D',
+    fx_life: 'vida'
+  };
+  const nodes = document.querySelectorAll('[data-i18n]');
+  const EN = {};
+  nodes.forEach(n => EN[n.dataset.i18n] = n.innerHTML);
+
+  function setLang(lang) {
+    const dict = lang === 'es' ? ES : EN;
+    nodes.forEach(n => { const v = dict[n.dataset.i18n]; if (v) n.innerHTML = v; });
+    document.documentElement.lang = lang;
+    document.querySelectorAll('[data-l]').forEach(s => s.classList.toggle('on', s.dataset.l === lang));
+  }
+
+  let lang = (navigator.language || 'en').toLowerCase().startsWith('es') ? 'es' : 'en';
+  try { lang = sessionStorage.getItem('lang') || lang; } catch (e) {}
+  const q = new URLSearchParams(location.search).get('lang');
+  if (q === 'es' || q === 'en') lang = q;
+  setLang(lang);
+
+  document.getElementById('lang').addEventListener('click', () => {
+    const next = document.documentElement.lang === 'es' ? 'en' : 'es';
+    setLang(next);
+    try { sessionStorage.setItem('lang', next); } catch (e) {}
+  });
+})();
+</script>
+
+<script>
+/* ================= ASCII hero: varios efectos ================= */
+(() => {
+  const canvas = document.getElementById('fire');
+  const hero = canvas.parentElement;
+  const ctx = canvas.getContext('2d');
+  const CHARS = ' .,:;-~=+*xX#%@';
+  const GLYPHS = '0123456789abcdefghijklmnopqrstuvwxyz<>/*+=#';
+  const CELL = 14, CW = CELL * 0.62;
+  let W, H, cols, rows, val, glyph, fade = 1;
+  const mouse = { x: 0, y: 0, down: false, active: false };
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  const palette = [];
+  for (let i = 0; i <= 100; i++) {
+    const t = i / 100;
+    const r = Math.min(255, Math.max(0, (t - 0.55) * 2.2 * 255));
+    const g = Math.min(255, Math.max(0, (t - 0.2) * 1.4 * 255));
+    const b = Math.min(255, 40 + t * 2.2 * 255);
+    palette.push(`rgb(${r|0},${g|0},${b|0})`);
+  }
+  const rnd = s => s[(Math.random() * s.length) | 0];
+  const cellMouse = () => [Math.floor(mouse.x / CW), Math.floor(mouse.y / CELL)];
+
+  /* ---- fuego ---- */
+  const fire = {
+    init() {},
+    step(t) {
+      const base = 0.8 + 0.12 * Math.sin(t / 900);
+      for (let x = 0; x < cols; x++) val[(rows - 1) * cols + x] = Math.random() < 0.6 ? base : base * Math.random();
+      if (mouse.active) {
+        const [mx, my] = cellMouse(), rad = mouse.down ? 6 : 3;
+        for (let dy = -rad; dy <= rad; dy++) for (let dx = -rad; dx <= rad; dx++) {
+          const x = mx + dx, y = my + dy;
+          if (x < 0 || y < 0 || x >= cols || y >= rows || dx*dx + dy*dy > rad*rad) continue;
+          val[y * cols + x] = Math.min(1, val[y * cols + x] + (mouse.down ? 0.5 : 0.3) * Math.random());
+        }
+      }
+      const wind = Math.sin(t / 1700) * 0.6, cooling = 2.0 / rows;
+      for (let y = 0; y < rows - 1; y++) for (let x = 0; x < cols; x++) {
+        const sx = Math.min(cols - 1, Math.max(0, x + Math.round(Math.random() * 2 - 1 + wind * Math.random())));
+        const b1 = val[(y + 1) * cols + sx], b2 = y + 2 < rows ? val[(y + 2) * cols + sx] : b1;
+        const v = b1 * 0.7 + b2 * 0.3 - cooling * (0.5 + Math.random());
+        val[y * cols + x] = v > 0 ? v : 0;
+      }
+    }
+  };
+
+  /* ---- plasma: suma de ondas, el mouse mueve el centro ---- */
+  const plasma = {
+    cx: 0, cy: 0,
+    init() { this.cx = cols / 2; this.cy = rows / 2; },
+    step(t) {
+      const s = t / 1000;
+      if (mouse.active) { const [mx, my] = cellMouse(); this.cx += (mx - this.cx) * 0.08; this.cy += (my - this.cy) * 0.08; }
+      for (let y = 0; y < rows; y++) for (let x = 0; x < cols; x++) {
+        const dx = (x - this.cx) * 0.62, dy = y - this.cy;
+        const v = Math.sin(x * 0.06 + s) + Math.sin(y * 0.11 - s * 0.7)
+                + Math.sin((x + y) * 0.04 + s * 0.5) + Math.sin(Math.sqrt(dx*dx + dy*dy) * 0.18 - s * 1.6);
+        const n = (v + 4) / 8;
+        val[y * cols + x] = Math.pow(n, 2.2) * 0.95;
+      }
+    }
+  };
+
+  /* ---- estrellas en 3D, el mouse cambia la dirección ---- */
+  const stars = {
+    list: [], ox: 0, oy: 0,
+    init() {
+      this.list = Array.from({ length: Math.min(900, cols * rows / 6) }, () => this.spawn(Math.random()));
+    },
+    spawn(z) { return { x: (Math.random() - 0.5) * 2, y: (Math.random() - 0.5) * 2, z: z || 1 }; },
+    step() {
+      val.fill(0);
+      const tx = mouse.active ? (mouse.x / W - 0.5) : 0, ty = mouse.active ? (mouse.y / H - 0.5) : 0;
+      this.ox += (tx - this.ox) * 0.05; this.oy += (ty - this.oy) * 0.05;
+      const speed = mouse.down ? 0.03 : 0.008;
+      for (let i = 0; i < this.list.length; i++) {
+        const st = this.list[i];
+        st.z -= speed;
+        if (st.z <= 0.02) { this.list[i] = this.spawn(1); continue; }
+        const px = Math.round(((st.x - this.ox * st.z) / st.z) * cols * 0.25 + cols / 2);
+        const py = Math.round(((st.y - this.oy * st.z) / st.z) * rows * 0.4 + rows / 2);
+        if (px < 0 || py < 0 || px >= cols || py >= rows) { this.list[i] = this.spawn(1); continue; }
+        val[py * cols + px] = Math.max(val[py * cols + px], Math.min(1, (1 - st.z) * 1.1));
+      }
+    }
+  };
+
+  /* ---- lluvia de caracteres ---- */
+  const rain = {
+    drops: [],
+    init() {
+      this.drops = Array.from({ length: cols }, () => ({ y: Math.random() * -rows, v: 0.3 + Math.random() * 0.7 }));
+      for (let i = 0; i < glyph.length; i++) glyph[i] = rnd(GLYPHS);
+    },
+    step() {
+      for (let i = 0; i < val.length; i++) { val[i] *= 0.9; if (Math.random() < 0.002) glyph[i] = rnd(GLYPHS); }
+      const [mx] = cellMouse();
+      for (let x = 0; x < cols; x++) {
+        const d = this.drops[x];
+        const boost = mouse.active && Math.abs(x - mx) < 6 ? 2.2 : 1;
+        d.y += d.v * boost;
+        const y = d.y | 0;
+        if (y >= 0 && y < rows) { val[y * cols + x] = 1; glyph[y * cols + x] = rnd(GLYPHS); }
+        if (d.y > rows + Math.random() * 40) { d.y = -Math.random() * 20; d.v = 0.3 + Math.random() * 0.7; }
+      }
+    }
+  };
+
+  /* ---- toro 3D girando (proyección + z-buffer) ---- */
+  const torus = {
+    A: 0, B: 0, zb: null,
+    init() { this.zb = new Float32Array(cols * rows); },
+    step() {
+      val.fill(0); this.zb.fill(0);
+      const k = mouse.down ? 3 : 1;
+      if (mouse.active) { this.A += (mouse.y / H - 0.5) * 0.06; this.B += (mouse.x / W - 0.5) * 0.06; }
+      this.A += 0.02 * k; this.B += 0.012 * k;
+      const cA = Math.cos(this.A), sA = Math.sin(this.A), cB = Math.cos(this.B), sB = Math.sin(this.B);
+      const R1 = 1, R2 = 2, K2 = 8;
+      const scale = Math.min(cols * 0.62, rows) * 0.3;
+      const K1 = scale * K2 / (R1 + R2);
+      for (let th = 0; th < 6.283; th += 0.07) {
+        const ct = Math.cos(th), st = Math.sin(th);
+        for (let ph = 0; ph < 6.283; ph += 0.02) {
+          const cp = Math.cos(ph), sp = Math.sin(ph);
+          const cx = R2 + R1 * ct, cy = R1 * st;
+          const x = cx * (cB * cp + sA * sB * sp) - cy * cA * sB;
+          const y = cx * (sB * cp - sA * cB * sp) + cy * cA * cB;
+          const z = K2 + cA * cx * sp + cy * sA;
+          const ooz = 1 / z;
+          const px = Math.round(cols / 2 + (K1 * ooz * x) / 0.62);
+          const py = Math.round(rows * 0.58 - K1 * ooz * y);
+          if (px < 0 || py < 0 || px >= cols || py >= rows) continue;
+          const L = cp * ct * sB - cA * ct * sp - sA * st + cB * (cA * st - ct * sA * sp);
+          const i = py * cols + px;
+          if (ooz > this.zb[i]) { this.zb[i] = ooz; val[i] = Math.max(0.08, Math.min(0.78, (L + 0.3) / 1.8)); }
+        }
+      }
+    }
+  };
+
+  /* ---- juego de la vida, el mouse dibuja células ---- */
+  const life = {
+    a: null, b: null, last: 0,
+    init() {
+      this.a = new Uint8Array(cols * rows); this.b = new Uint8Array(cols * rows);
+      for (let i = 0; i < this.a.length; i++) this.a[i] = Math.random() < 0.18 ? 1 : 0;
+    },
+    step(t) {
+      if (mouse.active) {
+        const [mx, my] = cellMouse();
+        for (let k = 0; k < (mouse.down ? 30 : 6); k++) {
+          const x = mx + ((Math.random() * 7) | 0) - 3, y = my + ((Math.random() * 5) | 0) - 2;
+          if (x >= 0 && y >= 0 && x < cols && y < rows) this.a[y * cols + x] = 1;
+        }
+      }
+      if (t - this.last > 110) {
+        this.last = t;
+        let alive = 0;
+        for (let y = 0; y < rows; y++) for (let x = 0; x < cols; x++) {
+          let n = 0;
+          for (let dy = -1; dy <= 1; dy++) for (let dx = -1; dx <= 1; dx++) {
+            if (!dx && !dy) continue;
+            n += this.a[((y + dy + rows) % rows) * cols + ((x + dx + cols) % cols)];
+          }
+          const i = y * cols + x, s = this.a[i];
+          this.b[i] = (s && (n === 2 || n === 3)) || (!s && n === 3) ? 1 : 0;
+          alive += this.b[i];
+        }
+        [this.a, this.b] = [this.b, this.a];
+        if (alive < cols * rows * 0.02) for (let i = 0; i < this.a.length; i++) if (Math.random() < 0.05) this.a[i] = 1;
+      }
+      for (let i = 0; i < val.length; i++) val[i] = this.a[i] ? 0.85 : val[i] * 0.86;
+    }
+  };
+
+  const EFFECTS = { fire, plasma, stars, rain, torus, life };
+  const USES_GLYPH = { rain: true };
+  let current = 'fire';
+
+  function resize() {
+    const dpr = window.devicePixelRatio || 1;
+    W = hero.clientWidth; H = hero.clientHeight;
+    canvas.width = W * dpr; canvas.height = H * dpr;
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    cols = Math.ceil(W / CW); rows = Math.ceil(H / CELL);
+    val = new Float32Array(cols * rows);
+    glyph = new Array(cols * rows).fill(' ');
+    ctx.font = `bold ${CELL}px ui-monospace, SFMono-Regular, Menlo, Consolas, monospace`;
+    ctx.textBaseline = 'top';
+    EFFECTS[current].init();
+  }
+
+  function draw() {
+    ctx.fillStyle = '#05080d';
+    ctx.fillRect(0, 0, W, H);
+    const g = USES_GLYPH[current];
+    for (let y = 0; y < rows; y++) for (let x = 0; x < cols; x++) {
+      const v = val[y * cols + x] * fade;
+      if (v < 0.05) continue;
+      ctx.fillStyle = palette[Math.min(100, (v * 100) | 0)];
+      ctx.fillText(g ? glyph[y * cols + x] : CHARS[Math.min(CHARS.length - 1, (v * CHARS.length) | 0)], x * CW, y * CELL);
+    }
+  }
+
+  window.setEffect = name => {
+    if (!EFFECTS[name]) return;
+    current = name;
+    val.fill(0);
+    EFFECTS[name].init();
+    document.querySelectorAll('[data-fx]').forEach(b => b.classList.toggle('on', b.dataset.fx === name));
+  };
+  document.querySelectorAll('[data-fx]').forEach(b => b.addEventListener('click', e => { e.stopPropagation(); setEffect(b.dataset.fx); }));
+
+  let last = 0, visible = true;
+  new IntersectionObserver(e => visible = e[0].isIntersecting).observe(hero);
+  function loop(t) {
+    if (visible && t - last > 33) { EFFECTS[current].step(t); draw(); last = t; }
+    requestAnimationFrame(loop);
+  }
+
+  // el hero se apaga a medida que bajas
+  window.addEventListener('scroll', () => { fade = Math.max(0, 1 - window.scrollY / (H * 0.9)); }, { passive: true });
+
+  function setPos(e) {
+    const p = e.touches ? e.touches[0] : e;
+    const r = canvas.getBoundingClientRect();
+    mouse.x = p.clientX - r.left; mouse.y = p.clientY - r.top; mouse.active = true;
+  }
+  hero.addEventListener('mousemove', setPos);
+  hero.addEventListener('mousedown', e => { setPos(e); mouse.down = true; });
+  window.addEventListener('mouseup', () => mouse.down = false);
+  hero.addEventListener('mouseleave', () => mouse.active = false);
+  hero.addEventListener('touchstart', e => { setPos(e); mouse.down = true; }, { passive: true });
+  hero.addEventListener('touchmove', setPos, { passive: true });
+  hero.addEventListener('touchend', () => { mouse.down = false; mouse.active = false; });
+  window.addEventListener('resize', resize);
+
+  resize();
+  setEffect(new URLSearchParams(location.search).get('fx') || 'fire');
+  if (reduce) { EFFECTS[current].step(0); draw(); } else requestAnimationFrame(loop);
+})();
+
+/* ================= animaciones al hacer scroll ================= */
+(() => {
+  if (matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    document.documentElement.classList.add('no-anim');
+    return;
+  }
+  const SCR = '!<>-_\\/[]{}=+*^?#';
+
+  // 1) títulos que se "decodifican" desde caracteres al azar
+  function decode(el) {
+    const final = el.textContent;
+    let frame = 0;
+    const total = 18;
+    const id = setInterval(() => {
+      frame++;
+      const done = Math.floor((frame / total) * final.length);
+      el.textContent = final.split('').map((c, i) =>
+        i < done || c === ' ' ? c : SCR[(Math.random() * SCR.length) | 0]).join('');
+      if (frame >= total) { clearInterval(id); el.textContent = final; }
+    }, 35);
+  }
+
+  // 2) comandos que se escriben letra por letra
+  function type(el) {
+    const final = el.textContent;
+    el.textContent = '';
+    el.classList.add('typing');
+    let i = 0;
+    const id = setInterval(() => {
+      el.textContent = final.slice(0, ++i);
+      if (i >= final.length) { clearInterval(id); setTimeout(() => el.classList.remove('typing'), 600); }
+    }, 45);
+  }
+
+  // 3) divisores ASCII que se dibujan de izquierda a derecha
+  function drawLine(el) {
+    const n = Math.floor(el.clientWidth / 9.1);
+    let i = 0;
+    const id = setInterval(() => {
+      i += 3;
+      el.textContent = '─'.repeat(Math.min(i, n)) + (i < n ? '>' : '');
+      if (i >= n) clearInterval(id);
+    }, 12);
+  }
+
+  const io = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (!e.isIntersecting) return;
+      const el = e.target;
+      io.unobserve(el);
+      el.classList.add('in');
+      if (el.matches('.cmd .arg')) type(el);
+      else if (el.matches('.card h3')) setTimeout(() => decode(el), 150);
+      else if (el.matches('.rule')) drawLine(el);
+    });
+  }, { threshold: 0.2 });
+
+  document.querySelectorAll('.cmd .arg, .card h3, .card, .rule, .note').forEach(el => io.observe(el));
+
+  // 4) barra de progreso ASCII
+  const bar = document.getElementById('progress');
+  const N = 20;
+  function update() {
+    const max = document.documentElement.scrollHeight - innerHeight;
+    const p = max > 0 ? Math.min(1, scrollY / max) : 0;
+    const f = Math.round(p * N);
+    bar.textContent = `[${'#'.repeat(f)}${'.'.repeat(N - f)}] ${String(Math.round(p * 100)).padStart(3)}%`;
+    bar.classList.toggle('show', scrollY > innerHeight * 0.5);
+  }
+  addEventListener('scroll', update, { passive: true });
+  update();
+})();
+</script>
+</body>
+</html>
